@@ -11,36 +11,32 @@ namespace glassBookAPI.Controllers
     {
         // GET: api/<CommentsController>
         [HttpGet]
-        public IEnumerable<Comment> Get()
+        public IEnumerable<Dictionary<string, object>> Get()
         {
-            List<Comment> comments = new List<Comment>();
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
 
             string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = "SELECT * FROM comment limit 500";
+                string sql = "SELECT b.book_name ,c.user_name, c.rate, c.comment_txt, c.date" +
+                    "  FROM comment AS c, book AS b" +
+                    "  WHERE c.book_id = b.book_id" +
+                    "  ORDER BY date DESC limit 50";
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
+                        int j = 1;
                         while (reader.Read())
                         {
-                            int comment_id = reader.GetInt32(0);
-                            DateTime date = reader.GetDateTime(1);
-                            string user_name = reader.GetString(2);
-                            string comment_txt = reader.GetString(3);
-                            int rate = reader.GetInt32(4);
-                            int book_id = reader.GetInt32(5);
-
-                            Comment c = new Comment();
-                            c.Comment_Id = comment_id;
-                            c.Date = date;
-                            c.User_name = user_name;
-                            c.Comment_txt = comment_txt;
-                            c.Rate = rate;
-                            c.Book_id = book_id;
-                            comments.Add(c);
+                            Dictionary<string, object> row = new Dictionary<string, object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row.Add(reader.GetName(i), reader.GetValue(i));
+                            }
+                            row.Add("seq", j++);
+                            rows.Add(row);
                             // retrieve data for other columns as needed
 
                         }
@@ -48,7 +44,7 @@ namespace glassBookAPI.Controllers
                 }
                 connection.Close();
             }
-            return comments;
+            return rows;
         }
 
         // GET api/<CommentsController>/5
