@@ -52,11 +52,51 @@ namespace glassBookAPI.Controllers
         }
 
 
-        // GET api/<BooksController>/5
+        // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult GetBook(string id)
         {
-            return "value";
+            bool b = false;
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = string.Format("SELECT   b.book_id, b.book_name,b.img, a.author_name,c.comment_txt, c.rate, b.publisher,c.date, c.user_name" +
+                    " FROM comment c JOIN book b" +
+                    " ON c.book_id = b.book_id" +
+                    " JOIN author a ON b.author_id = a.author_id" +
+                    " WHERE b.book_id = {0}" +
+                    " ORDER BY c.date DESC LIMIT 20", id);
+
+                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                {
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        int j = 1;
+                        while (reader.Read())
+                        {
+                            b = true;
+                            Dictionary<string, object> row = new Dictionary<string, object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row.Add(reader.GetName(i), reader.GetValue(i));
+                            }
+                            row.Add("seq", j++);
+                            rows.Add(row);
+                            // retrieve data for other columns as needed
+
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            if (!b)
+            {
+                return NotFound();
+            }
+            return Ok(rows);
         }
 
         // POST api/<BooksController>

@@ -19,7 +19,7 @@ namespace glassBookAPI.Controllers
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = "SELECT b.book_name ,c.user_name, c.rate, c.comment_txt, c.date" +
+                string sql = "SELECT b.book_id, b.book_name ,c.user_name, c.rate, c.comment_txt, c.date" +
                     "  FROM comment AS c, book AS b" +
                     "  WHERE c.book_id = b.book_id" +
                     "  ORDER BY date DESC limit 20";
@@ -61,7 +61,7 @@ namespace glassBookAPI.Controllers
                     " FROM book b JOIN comment c" +
                     " ON b.book_id = c.book_id" +
                     " JOIN author a ON b.author_id = a.author_id" +
-                    " GROUP BY b.book_id, b.book_name, a.author_name, b.publisher, b.img" +
+                    " GROUP BY b.book_id" +
                     " ORDER BY avg_rate DESC LIMIT 10";
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
