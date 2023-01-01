@@ -49,10 +49,46 @@ namespace glassBookAPI.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult GetUser(string id)
         {
-            return "value";
+            User user = new User();
+            bool b = false;
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = string.Format("SELECT * FROM user WHERE user_name = '{0}'", id);
+
+                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                {
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            b = true;
+                            int user_id = reader.GetInt32(0);
+                            string user_name = reader.GetString(1);
+                            string password = reader.GetString(2);
+                            string country = reader.GetString(3);
+                            int age = reader.GetInt32(4);
+                            user.User_name = user_name;
+                            user.User_id = user_id;
+                            user.Password = password;
+                            user.Country = country;
+                            user.age = age;
+
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            if (!b)
+            {
+                return NotFound();
+            }
+            return Ok(user);
         }
+
 
         // POST api/<UsersController>
         [HttpPost]
