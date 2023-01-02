@@ -116,5 +116,49 @@ namespace glassBookAPI.Controllers
         public void Delete(int id)
         {
         }
+
+        // GET api/<UsersController>/5
+        [HttpGet("avg/{id}")]
+        public ActionResult GetBookAVG(string id)
+        {
+            bool b = false;
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = string.Format("select book_name,avg(rate) as avg_rate" +
+                    " From book as b, comment as c" +
+                    " where c.book_id = b.book_id and b.book_id = {0}", id);
+
+                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                {
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        int j = 1;
+                        while (reader.Read())
+                        {
+                            b = true;
+                            Dictionary<string, object> row = new Dictionary<string, object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row.Add(reader.GetName(i), reader.GetValue(i));
+                            }
+                            row.Add("seq", j++);
+                            rows.Add(row);
+                            // retrieve data for other columns as needed
+
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            if (!b)
+            {
+                return NotFound();
+            }
+            return Ok(rows);
+        }
     }
 }

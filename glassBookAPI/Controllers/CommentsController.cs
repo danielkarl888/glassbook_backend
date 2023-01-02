@@ -87,7 +87,50 @@ namespace glassBookAPI.Controllers
             return rows;
         }
 
-        
+        // GET api/<UsersController>/5
+        [HttpGet("mycomments/{user_name}")]
+        public ActionResult GetUser(string user_name)
+        {
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+            bool b = false;
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = string.Format("SELECT c.comment_txt AS comment, c.rate, b.book_name AS book_name, a.author_name AS author_name, c.date AS date, b.book_id" +
+                                        " FROM comment c INNER JOIN user u ON c.user_name = u.user_name" +
+                                        " INNER JOIN book b ON c.book_id = b.book_id " +
+                                        " INNER JOIN author a ON b.author_id = a.author_id " +
+                                        " WHERE u.user_name = '{0}' " +
+                                        " ORDER BY c.date desc limit 50", user_name);
+
+                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                {
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        int j = 1;
+                        while (reader.Read())
+                        {
+                            b = true;
+                            Dictionary<string, object> row = new Dictionary<string, object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row.Add(reader.GetName(i), reader.GetValue(i));
+                            }
+                            row.Add("seq", j++);
+                            rows.Add(row);
+                            // retrieve data for other columns as needed
+                        }
+                    }
+                    connection.Close();
+                }
+                if (!b)
+                {
+                    return NotFound();
+                }
+                return Ok(rows);
+            }
+        }
         // POST api/<CommentsController>
         [HttpPost]
         public void Post([FromBody] string value)

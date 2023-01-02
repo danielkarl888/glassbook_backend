@@ -51,42 +51,42 @@ namespace glassBookAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult GetUser(string id)
         {
-            User user = new User();
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
             bool b = false;
             string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = string.Format("SELECT * FROM user WHERE user_name = '{0}'", id);
+                string sql = string.Format("select u.user_name,age,country,avg(rate) as avg_rate ,count(comment_id) as numComments" +
+                    " from user as u, comment as c " +
+                    "where u.user_name = '{0}' and u.user_name = c.user_name", id);
 
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
+                        int j = 1;
                         while (reader.Read())
                         {
                             b = true;
-                            int user_id = reader.GetInt32(0);
-                            string user_name = reader.GetString(1);
-                            string password = reader.GetString(2);
-                            string country = reader.GetString(3);
-                            int age = reader.GetInt32(4);
-                            user.User_name = user_name;
-                            user.User_id = user_id;
-                            user.Password = password;
-                            user.Country = country;
-                            user.age = age;
-
+                            Dictionary<string, object> row = new Dictionary<string, object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row.Add(reader.GetName(i), reader.GetValue(i));
+                            }
+                            row.Add("seq", j++);
+                            rows.Add(row);
+                            // retrieve data for other columns as needed
                         }
                     }
+                    connection.Close();
                 }
-                connection.Close();
+                if (!b)
+                {
+                    return NotFound();
+                }
+                return Ok(rows);
             }
-            if (!b)
-            {
-                return NotFound();
-            }
-            return Ok(user);
         }
 
 
