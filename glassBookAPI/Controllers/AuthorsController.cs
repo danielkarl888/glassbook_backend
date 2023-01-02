@@ -15,7 +15,7 @@ namespace glassBookAPI.Controllers
         {
             List<Author> authors = new List<Author>();
 
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();

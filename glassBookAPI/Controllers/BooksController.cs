@@ -55,7 +55,52 @@ namespace glassBookAPI.Controllers
 
 
         // GET api/<UsersController>/5
-        [HttpGet("{id}")]
+        [HttpGet("avg/{id}")]
+        public ActionResult GetBookAVG(string id)
+        {
+            bool b = false;
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = string.Format("select book_name,avg(rate) as avg_rate" +
+                    " From book as b, comment as c" +
+                    " where c.book_id = b.book_id and b.book_id = {0}", id);
+
+                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                {
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        int j = 1;
+                        while (reader.Read())
+                        {
+                            b = true;
+                            Dictionary<string, object> row = new Dictionary<string, object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row.Add(reader.GetName(i), reader.GetValue(i));
+                            }
+                            row.Add("seq", j++);
+                            rows.Add(row);
+                            // retrieve data for other columns as needed
+
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            if (!b)
+            {
+                return NotFound();
+            }
+            return Ok(rows);
+        }
+    
+
+// GET api/<UsersController>/5
+[HttpGet("{id}")]
         public ActionResult GetBook(string id)
         {
             bool b = false;
@@ -107,7 +152,7 @@ namespace glassBookAPI.Controllers
         {
             List<Book> books = new List<Book>();
 
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -147,7 +192,7 @@ namespace glassBookAPI.Controllers
         {
             List<Book> books = new List<Book>();
 
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -187,7 +232,7 @@ namespace glassBookAPI.Controllers
         {
             List<Book> books = new List<Book>();
 
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
