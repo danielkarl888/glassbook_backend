@@ -155,7 +155,7 @@ namespace glassBookAPI.Controllers
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = string.Format("SELECT b.book_name AS Title, a.author_name as Author,avg(c.rate) as Avg_rate, b.img as Image, b.publisher as Publisher " +
+                string sql = string.Format("SELECT b.book_id as id, b.book_name AS Title, a.author_name as Author,avg(c.rate) as Avg_rate, b.img as Image, b.publisher as Publisher " +
                     "from book as b " +
                     "INNER JOIN  comment as c ON c.book_id = b.book_id " +
                     "INNER JOIN  author as a  ON b.author_id = a.author_id " +
@@ -169,13 +169,15 @@ namespace glassBookAPI.Controllers
                     {
                         while (reader.Read())
                         {
-                            string book_name = reader.GetString(0);
-                            string author_name = reader.GetString(1);
-                            int avg_rate = reader.GetInt32(2);
-                            string img = reader.GetString(3);
-                            string publisher = reader.GetString(4);
+                            int book_id = reader.GetInt32(0);
+                            string book_name = reader.GetString(1);
+                            string author_name = reader.GetString(2);
+                            int avg_rate = reader.GetInt32(3);
+                            string img = reader.GetString(4);
+                            string publisher = reader.GetString(5);
 
                             Search_Book book = new Search_Book();
+                            book.Book_id = book_id;
                             book.Book_name = book_name;
                             book.Author_name = author_name;
                             book.Publisher = publisher;
@@ -199,7 +201,7 @@ namespace glassBookAPI.Controllers
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = string.Format("select b.book_name as Title ,a.author_name as author, avg(rate) as Avg_rating, b.img as Image, b.publisher as publisher " +
+                string sql = string.Format("select b.book_id as id, b.book_name as Title ,a.author_name as author, avg(rate) as Avg_rating, b.img as Image, b.publisher as publisher " +
                     "From book as b, comment as c, user as u, author as a " +
                     "where c.book_id = b.book_id and u.user_name = c.user_name and u.country = '{0}' and b.author_id = a.author_id " +
                     "group by book_name " +
@@ -211,13 +213,15 @@ namespace glassBookAPI.Controllers
                     {
                         while (reader.Read())
                         {
-                            string book_name = reader.GetString(0);
-                            string author_name = reader.GetString(1);
-                            int avg_rate = reader.GetInt32(2);
-                            string img = reader.GetString(3);
-                            string publisher = reader.GetString(4);
+                            int book_id = reader.GetInt32(0);
+                            string book_name = reader.GetString(1);
+                            string author_name = reader.GetString(2);
+                            int avg_rate = reader.GetInt32(3);
+                            string img = reader.GetString(4);
+                            string publisher = reader.GetString(5);
 
                             Search_Book book = new Search_Book();
+                            book.Book_id = book_id;
                             book.Book_name = book_name;
                             book.Author_name = author_name;
                             book.Publisher = publisher;
@@ -241,7 +245,7 @@ namespace glassBookAPI.Controllers
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = string.Format("select b.book_name as Title ,a.author_name as author, avg(rate) as Avg_rating, b.img as Image, b.publisher as publisher " +
+                string sql = string.Format("select b.book_id as id, b.book_name as Title ,a.author_name as author, avg(rate) as Avg_rating, b.img as Image, b.publisher as publisher " +
                     "From book as b, comment as c, user as u, author as a " +
                     "where c.book_id = b.book_id and b.category = '{0}' and u.user_name = c.user_name and b.author_id = a.author_id " +
                     "group by book_name " +
@@ -253,13 +257,15 @@ namespace glassBookAPI.Controllers
                     {
                         while (reader.Read())
                         {
-                            string book_name = reader.GetString(0);
-                            string author_name = reader.GetString(1);
-                            int avg_rate = reader.GetInt32(2);
-                            string img = reader.GetString(3);
-                            string publisher = reader.GetString(4);
+                            int book_id = reader.GetInt32(0);
+                            string book_name = reader.GetString(1);
+                            string author_name = reader.GetString(2);
+                            int avg_rate = reader.GetInt32(3);
+                            string img = reader.GetString(4);
+                            string publisher = reader.GetString(5);
 
                             Search_Book book = new Search_Book();
+                            book.Book_id = book_id;
                             book.Book_name = book_name;
                             book.Author_name = author_name;
                             book.Publisher = publisher;
