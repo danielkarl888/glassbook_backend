@@ -15,7 +15,7 @@ namespace glassBookAPI.Controllers
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
 
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -53,7 +53,7 @@ namespace glassBookAPI.Controllers
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
 
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -93,7 +93,7 @@ namespace glassBookAPI.Controllers
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
             bool b = false;
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
