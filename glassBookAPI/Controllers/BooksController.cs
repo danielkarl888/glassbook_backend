@@ -61,7 +61,7 @@ namespace glassBookAPI.Controllers
             bool b = false;
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
 
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -106,7 +106,7 @@ namespace glassBookAPI.Controllers
             bool b = false;
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
 
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -148,35 +148,39 @@ namespace glassBookAPI.Controllers
 
 
         [HttpGet("SearchText/{search}")]
-        public IEnumerable<Book> GetByText(string search)
+        public IEnumerable<Search_Book> GetByText(string search)
         {
-            List<Book> books = new List<Book>();
-
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            List<Search_Book> books = new List<Search_Book>();
+            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = "SELECT * FROM book limit 10";
+                string sql = string.Format("SELECT b.book_name AS Title, a.author_name as Author,avg(c.rate) as Avg_rate, b.img as Image, b.publisher as Publisher " +
+                    "from book as b " +
+                    "INNER JOIN  comment as c ON c.book_id = b.book_id " +
+                    "INNER JOIN  author as a  ON b.author_id = a.author_id " +
+                    "WHERE a.author_name LIKE '%{0}%' OR b.book_name LIKE '%{0}%' " +
+                    "group by b.book_name " +
+                    "ORDER BY Avg_rate desc " +
+                    "LIMIT 50;", search);
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            int book_id = reader.GetInt32(0);
-                            string book_name = reader.GetString(1);
-                            int author_id = reader.GetInt32(2);
-                            string publisher = reader.GetString(3);
-                            string img = reader.GetString(4);
-                            string cat = reader.GetString(5);
+                            string book_name = reader.GetString(0);
+                            string author_name = reader.GetString(1);
+                            int avg_rate = reader.GetInt32(2);
+                            string img = reader.GetString(3);
+                            string publisher = reader.GetString(4);
 
-                            Book book = new Book();
-                            book.Book_id = book_id;
+                            Search_Book book = new Search_Book();
                             book.Book_name = book_name;
-                            book.Author_id = author_id;
+                            book.Author_name = author_name;
                             book.Publisher = publisher;
                             book.Img = img;
-                            book.Category = cat;
+                            book.Avg_rate = avg_rate;
                             books.Add(book);
 
                         }
@@ -188,35 +192,37 @@ namespace glassBookAPI.Controllers
         }
 
         [HttpGet("SearchCountry/{search}")]
-        public IEnumerable<Book> GetByCountry(string search)
+        public IEnumerable<Search_Book> GetByCountry(string search)
         {
-            List<Book> books = new List<Book>();
-
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            List<Search_Book> books = new List<Search_Book>();
+            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = "SELECT * FROM book limit 10";
+                string sql = string.Format("select b.book_name as Title ,a.author_name as author, avg(rate) as Avg_rating, b.img as Image, b.publisher as publisher " +
+                    "From book as b, comment as c, user as u, author as a " +
+                    "where c.book_id = b.book_id and u.user_name = c.user_name and u.country = '{0}' and b.author_id = a.author_id " +
+                    "group by book_name " +
+                    "order by Avg_rating desc " +
+                    "LIMIT 10;", search);
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            int book_id = reader.GetInt32(0);
-                            string book_name = reader.GetString(1);
-                            int author_id = reader.GetInt32(2);
-                            string publisher = reader.GetString(3);
-                            string img = reader.GetString(4);
-                            string cat = reader.GetString(5);
+                            string book_name = reader.GetString(0);
+                            string author_name = reader.GetString(1);
+                            int avg_rate = reader.GetInt32(2);
+                            string img = reader.GetString(3);
+                            string publisher = reader.GetString(4);
 
-                            Book book = new Book();
-                            book.Book_id = book_id;
+                            Search_Book book = new Search_Book();
                             book.Book_name = book_name;
-                            book.Author_id = author_id;
+                            book.Author_name = author_name;
                             book.Publisher = publisher;
                             book.Img = img;
-                            book.Category = cat;
+                            book.Avg_rate = avg_rate;
                             books.Add(book);
 
                         }
@@ -228,35 +234,37 @@ namespace glassBookAPI.Controllers
         }
 
         [HttpGet("SearchCategory/{search}")]
-        public IEnumerable<Book> GetByCategory(string search)
+        public IEnumerable<Search_Book> GetByCategory(string search)
         {
-            List<Book> books = new List<Book>();
-
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            List<Search_Book> books = new List<Search_Book>();
+            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = "SELECT * FROM book limit 10";
+                string sql = string.Format("select b.book_name as Title ,a.author_name as author, avg(rate) as Avg_rating, b.img as Image, b.publisher as publisher " +
+                    "From book as b, comment as c, user as u, author as a " +
+                    "where c.book_id = b.book_id and b.category = '{0}' and u.user_name = c.user_name and b.author_id = a.author_id " +
+                    "group by book_name " +
+                    "order by Avg_rating desc " +
+                    "LIMIT 10;", search);
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            int book_id = reader.GetInt32(0);
-                            string book_name = reader.GetString(1);
-                            int author_id = reader.GetInt32(2);
-                            string publisher = reader.GetString(3);
-                            string img = reader.GetString(4);
-                            string cat = reader.GetString(5);
+                            string book_name = reader.GetString(0);
+                            string author_name = reader.GetString(1);
+                            int avg_rate = reader.GetInt32(2);
+                            string img = reader.GetString(3);
+                            string publisher = reader.GetString(4);
 
-                            Book book = new Book();
-                            book.Book_id = book_id;
+                            Search_Book book = new Search_Book();
                             book.Book_name = book_name;
-                            book.Author_id = author_id;
+                            book.Author_name = author_name;
                             book.Publisher = publisher;
                             book.Img = img;
-                            book.Category = cat;
+                            book.Avg_rate = avg_rate;
                             books.Add(book);
 
                         }
