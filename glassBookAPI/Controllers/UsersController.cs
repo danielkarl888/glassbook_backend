@@ -89,6 +89,104 @@ namespace glassBookAPI.Controllers
             }
         }
 
+        [HttpGet("Login/")]
+        public IActionResult LoginContact(string user_name, string password)
+        {
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+            bool b = false;
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = string.Format("SELECT * FROM glassbook.user as u " +
+                    "WHERE u.user_name = '{0}' AND u.password = '{1}'", user_name, password);
+
+                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                {
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        int j = 1;
+                        while (reader.Read())
+                        {
+                            b = true;
+                            Dictionary<string, object> row = new Dictionary<string, object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row.Add(reader.GetName(i), reader.GetValue(i));
+                            }
+                            row.Add("seq", j++);
+                            rows.Add(row);
+
+                        }
+                    }
+                    connection.Close();
+                }
+                if (!b)
+                {
+                    return NotFound();
+                }
+                return Ok(rows);
+            }
+
+        }
+
+
+        [HttpGet("isExistUserName/")]
+        public IActionResult isExistUserName(string user_name)
+        {
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+            bool b = false;
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = string.Format("SELECT * FROM glassbook.user as u " +
+                    "WHERE u.user_name = '{0}'", user_name);
+
+                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                {
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        int j = 1;
+                        while (reader.Read())
+                        {
+                            b = true;
+                            Dictionary<string, object> row = new Dictionary<string, object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row.Add(reader.GetName(i), reader.GetValue(i));
+                            }
+                            row.Add("seq", j++);
+                            rows.Add(row);
+
+                        }
+                    }
+                    connection.Close();
+                }
+                if (!b)
+                {
+                    return NotFound();
+                }
+                return Ok(rows);
+            }
+
+        }
+        [HttpGet("Register/")]
+        public IActionResult Register(string user_name, string password, string country, string age)
+        {
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = string.Format("INSERT INTO user (user_name, password, country, age) VALUES ('{0}', '{1}','{2}', {3})",
+                    user_name, password, country, age);
+                MySqlCommand command = new MySqlCommand(sql, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+
+                return Ok();
+            }
+
+        }
 
         // POST api/<UsersController>
         [HttpPost]
