@@ -2,6 +2,7 @@
 {
     public class Search_Book
     {
+        public int Book_id { get; set; }
 
         public string Book_name { get; set; }
 
