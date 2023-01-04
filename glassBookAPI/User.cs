@@ -10,6 +10,6 @@
 
         public string Country { get; set; }
 
-        public int age { get; set; }
+        public int Age { get; set; }
     }
 }

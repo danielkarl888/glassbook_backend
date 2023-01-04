@@ -17,7 +17,7 @@ namespace glassBookAPI.Controllers
         {
             List<Book> books = new List<Book>();
 
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -61,7 +61,7 @@ namespace glassBookAPI.Controllers
             bool b = false;
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
 
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -106,7 +106,7 @@ namespace glassBookAPI.Controllers
             bool b = false;
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
 
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -151,7 +151,7 @@ namespace glassBookAPI.Controllers
         public IEnumerable<Search_Book> GetByText(string search)
         {
             List<Search_Book> books = new List<Search_Book>();
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -195,7 +195,7 @@ namespace glassBookAPI.Controllers
         public IEnumerable<Search_Book> GetByCountry(string search)
         {
             List<Search_Book> books = new List<Search_Book>();
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -237,7 +237,7 @@ namespace glassBookAPI.Controllers
         public IEnumerable<Search_Book> GetByCategory(string search)
         {
             List<Search_Book> books = new List<Search_Book>();
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();

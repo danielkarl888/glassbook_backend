@@ -15,7 +15,7 @@ namespace glassBookAPI.Controllers
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
 
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -53,7 +53,7 @@ namespace glassBookAPI.Controllers
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
 
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -93,7 +93,7 @@ namespace glassBookAPI.Controllers
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
             bool b = false;
-            string connectionString = "server=localhost;database=glass_book;uid=root;pwd=123456789;";
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -129,6 +129,24 @@ namespace glassBookAPI.Controllers
                     return NotFound();
                 }
                 return Ok(rows);
+            }
+        }
+        // evyatar has to change this sql query.
+        [HttpPost("addComment")]
+        public ActionResult AddComment([Bind("User_name,Comment_txt,Rate, Book_id")] Comment comment)
+        {
+            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = string.Format("INSERT INTO comment (date, user_name, comment_txt, rate, book_id) SELECT CAST(NOW() AS DATE), '{0}', '{1}', {2}, {3}; ",
+                                           comment.User_name, comment.Comment_txt, comment.Rate, comment.Book_id);
+
+                MySqlCommand command = new MySqlCommand(sql, connection) ;
+
+                MySqlDataReader reader = command.ExecuteReader();
+
+                return Ok();
             }
         }
         // POST api/<CommentsController>
