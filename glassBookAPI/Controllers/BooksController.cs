@@ -99,8 +99,8 @@ namespace glassBookAPI.Controllers
         }
     
 
-// GET api/<UsersController>/5
-[HttpGet("{id}")]
+        // GET api/<UsersController>/5
+        [HttpGet("{id}")]
         public ActionResult GetBook(string id)
         {
             bool b = false;
@@ -279,18 +279,6 @@ namespace glassBookAPI.Controllers
                 connection.Close();
             }
             return books;
-        }
-
-        // PUT api/<BooksController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<BooksController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

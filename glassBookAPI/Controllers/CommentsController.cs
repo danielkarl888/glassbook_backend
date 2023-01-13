@@ -9,7 +9,7 @@ namespace glassBookAPI.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
-        // GET: api/<CommentsController>
+        // GET the last 20 comments
         [HttpGet]
         public IEnumerable<Dictionary<string, object>> GetLast20()
         {
@@ -46,8 +46,8 @@ namespace glassBookAPI.Controllers
             }
             return rows;
         }
-        
-        // GET api/<CommentsController>/top10
+
+        // GET the Top 10 averaged books
         [HttpGet("top10")]
         public IEnumerable<Dictionary<string, object>> GetTop10Books()
         {
@@ -131,7 +131,6 @@ namespace glassBookAPI.Controllers
                 return Ok(rows);
             }
         }
-        // evyatar has to change this sql query.
         [HttpPost("addComment")]
         public ActionResult AddComment([Bind("User_name,Comment_txt,Rate, Book_id")] Comment comment)
         {
@@ -149,22 +148,6 @@ namespace glassBookAPI.Controllers
                 return Ok();
             }
         }
-        // POST api/<CommentsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
 
-        // PUT api/<CommentsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<CommentsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
