@@ -10,6 +10,7 @@ namespace glassBookAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+
         // GET: api/<UsersController>
         [HttpGet]
         public IEnumerable<User> Get()
@@ -17,78 +18,101 @@ namespace glassBookAPI.Controllers
             List<User> users = new List<User>();
 
             string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            try
             {
-                connection.Open();
-                string sql = "SELECT * FROM user";
-                using (MySqlCommand command = new MySqlCommand(sql, connection))
-                {
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            int user_id = reader.GetInt32(0);
-                            string user_name = reader.GetString(1);
-                            string password = reader.GetString(2);
-                            string country = reader.GetString(3);
-                            int age = reader.GetInt32(4);
-                            User user = new User();
-                            user.User_name = user_name;
-                            user.User_id= user_id;
-                            user.Password = password;
-                            user.Country = country;
-                            user.Age = age;
-                            users.Add(user);
-                            // retrieve data for other columns as needed
 
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "SELECT * FROM user";
+                    using (MySqlCommand command = new MySqlCommand(sql, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int user_id = reader.GetInt32(0);
+                                string user_name = reader.GetString(1);
+                                string password = reader.GetString(2);
+                                string country = reader.GetString(3);
+                                int age = reader.GetInt32(4);
+                                User user = new User();
+                                user.User_name = user_name;
+                                user.User_id = user_id;
+                                user.Password = password;
+                                user.Country = country;
+                                user.Age = age;
+                                users.Add(user);
+                                // retrieve data for other columns as needed
+
+                            }
                         }
                     }
+                    connection.Close();
                 }
-                connection.Close();
+                return users;
             }
-            return users;
-        }
+            catch (Exception ex)
+            {
+                User user = new User();
+                user.User_name = "error with server";
+                users.Add(user);
+                return users;
 
-        // GET api/<UsersController>/5
+            }
+        }
+        // GET a user's details
         [HttpGet("{id}")]
         public ActionResult GetUser(string id)
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
             bool b = false;
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            try
             {
-                connection.Open();
-                string sql = string.Format("select u.user_name,age,country," +
-                    " COALESCE(avg(rate),0) as Avg_rate,COALESCE(count(comment_id),0) as numComments" +
-                    " from user u left join comment as c  " +
-                    " ON c.user_name = u.user_name" +
-                    " where u.user_name = '{0}' GROUP BY u.user_name, u.age, u.country;", id);
+                string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = string.Format("select u.user_name,age,country," +
+                        " COALESCE(avg(rate),0) as Avg_rate,COALESCE(count(comment_id),0) as numComments" +
+                        " from user u left join comment as c  " +
+                        " ON c.user_name = u.user_name" +
+                        " where u.user_name = '{0}' GROUP BY u.user_name, u.age, u.country;", id);
 
-                using (MySqlCommand command = new MySqlCommand(sql, connection))
-                {
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {
-                        int j = 1;
-                        while (reader.Read())
+                        using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            b = true;
-                            Dictionary<string, object> row = new Dictionary<string, object>();
-                            for (int i = 0; i < reader.FieldCount; i++)
+                            int j = 1;
+                            while (reader.Read())
                             {
-                                row.Add(reader.GetName(i), reader.GetValue(i));
+                                b = true;
+                                Dictionary<string, object> row = new Dictionary<string, object>();
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    row.Add(reader.GetName(i), reader.GetValue(i));
+                                }
+                                row.Add("seq", j++);
+                                rows.Add(row);
+                                // retrieve data for other columns as needed
                             }
-                            row.Add("seq", j++);
-                            rows.Add(row);
-                            // retrieve data for other columns as needed
                         }
+                        connection.Close();
                     }
-                    connection.Close();
+                    if (!b)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(rows);
                 }
-                if (!b)
-                {
-                    return NotFound();
-                }
+            } catch (Exception ex)
+            {
+                Dictionary<string, object> row = new Dictionary<string, object>();
+                row.Add("age", "Error - Please refresh the page");
+                row.Add("country", "Error - Please refresh the page");
+                row.Add("numComments", "Error - Please refresh the page");
+
+                rows.Add(row);
                 return Ok(rows);
             }
         }
@@ -98,38 +122,49 @@ namespace glassBookAPI.Controllers
         {
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
             bool b = false;
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            try
             {
-                connection.Open();
-                string sql = string.Format("SELECT * FROM glassbook.user as u " +
-                    "WHERE u.user_name = '{0}' AND u.password = '{1}'", user_name, password);
 
-                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    connection.Open();
+                    string sql = string.Format("SELECT * FROM glassbook.user as u " +
+                        "WHERE u.user_name = '{0}' AND u.password = '{1}'", user_name, password);
+
+                    using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {
-                        int j = 1;
-                        while (reader.Read())
+                        using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            b = true;
-                            Dictionary<string, object> row = new Dictionary<string, object>();
-                            for (int i = 0; i < reader.FieldCount; i++)
+                            int j = 1;
+                            while (reader.Read())
                             {
-                                row.Add(reader.GetName(i), reader.GetValue(i));
-                            }
-                            row.Add("seq", j++);
-                            rows.Add(row);
+                                b = true;
+                                Dictionary<string, object> row = new Dictionary<string, object>();
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    row.Add(reader.GetName(i), reader.GetValue(i));
+                                }
+                                row.Add("seq", j++);
+                                rows.Add(row);
 
+                            }
                         }
+                        connection.Close();
                     }
-                    connection.Close();
+                    if (!b)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(rows);
                 }
-                if (!b)
-                {
-                    return NotFound();
-                }
-                return Ok(rows);
+            }
+            catch (Exception ex)
+            {
+                Dictionary<string, object> row = new Dictionary<string, object>();
+                row.Add("seq", "Error - Please refresh the page");
+                rows.Add(row);
+                return BadRequest(rows);
             }
 
         }
@@ -141,59 +176,76 @@ namespace glassBookAPI.Controllers
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
             bool b = false;
             string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            try
             {
-                connection.Open();
-                string sql = string.Format("SELECT * FROM glassbook.user as u " +
-                    "WHERE u.user_name = '{0}'", user_name);
 
-                using (MySqlCommand command = new MySqlCommand(sql, connection))
+
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    connection.Open();
+                    string sql = string.Format("SELECT * FROM glassbook.user as u " +
+                        "WHERE u.user_name = '{0}'", user_name);
+
+                    using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {
-                        int j = 1;
-                        while (reader.Read())
+                        using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            b = true;
-                            Dictionary<string, object> row = new Dictionary<string, object>();
-                            for (int i = 0; i < reader.FieldCount; i++)
+                            int j = 1;
+                            while (reader.Read())
                             {
-                                row.Add(reader.GetName(i), reader.GetValue(i));
-                            }
-                            row.Add("seq", j++);
-                            rows.Add(row);
+                                b = true;
+                                Dictionary<string, object> row = new Dictionary<string, object>();
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    row.Add(reader.GetName(i), reader.GetValue(i));
+                                }
+                                row.Add("seq", j++);
+                                rows.Add(row);
 
+                            }
                         }
+                        connection.Close();
                     }
-                    connection.Close();
+                    if (!b)
+                    {
+                        return false;
+                    }
+                    return true;
                 }
-                if (!b)
-                {
-                    return false;
-                }
-                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
 
         }
 
         [HttpPost("Register/")]
         public IActionResult Register([Bind("Username,Password,Country, Age")] User user)
-        {   
-            if (!isExistUserName(user.User_name) && user.Age > 0 && user.Age <= 120 && Regex.IsMatch(user.Password, @"^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]*$"))
+        {
+            try
             {
-
-                string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                if (!isExistUserName(user.User_name) && user.Age > 0 && user.Age <= 120 && Regex.IsMatch(user.Password, @"^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]*$"))
                 {
-                    connection.Open();
-                    string sql = string.Format("INSERT INTO user (user_name, password, country, age) VALUES ('{0}', '{1}','{2}', {3})",
-                        user.User_name, user.Password, user.Country, user.Age);
-                    MySqlCommand command = new MySqlCommand(sql, connection);
-                    MySqlDataReader reader = command.ExecuteReader();
 
-                    return Ok(user);
+                    string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+                    using (MySqlConnection connection = new MySqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        string sql = string.Format("INSERT INTO user (user_name, password, country, age) VALUES ('{0}', '{1}','{2}', {3})",
+                            user.User_name, user.Password, user.Country, user.Age);
+                        MySqlCommand command = new MySqlCommand(sql, connection);
+                        MySqlDataReader reader = command.ExecuteReader();
+
+                        return Ok(user);
+                    }
                 }
-            } else
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
             {
                 return BadRequest();
             }

@@ -9,38 +9,47 @@ namespace glassBookAPI.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        // GET: api/<AuthorsController>
+        // GET authors
         [HttpGet]
         public IEnumerable<Author> Get()
         {
             List<Author> authors = new List<Author>();
-
-            string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            try
             {
-                connection.Open();
-                string sql = "SELECT * FROM author limit 500";
-                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    connection.Open();
+                    string sql = "SELECT * FROM author limit 500";
+                    using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {
-                        while (reader.Read())
+                        using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            int author_id = reader.GetInt32(0);
-                            string author_name = reader.GetString(1);
+                            while (reader.Read())
+                            {
+                                int author_id = reader.GetInt32(0);
+                                string author_name = reader.GetString(1);
 
-                            Author author = new Author();
-                            author.Author_id = author_id;
-                            author.Author_name = author_name;
-                            authors.Add(author);
-                            // retrieve data for other columns as needed
+                                Author author = new Author();
+                                author.Author_id = author_id;
+                                author.Author_name = author_name;
+                                authors.Add(author);
+                                // retrieve data for other columns as needed
 
+                            }
                         }
                     }
+                    connection.Close();
                 }
-                connection.Close();
+                return authors;
             }
-            return authors;
+            catch (Exception ex)
+            {
+                Author author = new Author();
+                author.Author_name = "error with the server";
+                authors.Add(author);
+                return authors;
+            }
         }
 
 
