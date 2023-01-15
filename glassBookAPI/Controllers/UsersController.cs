@@ -225,9 +225,9 @@ namespace glassBookAPI.Controllers
         {
             try
             {
-                if (!isExistUserName(user.User_name) && user.Age > 0 && user.Age <= 120 && Regex.IsMatch(user.Password, @"^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]*$"))
+                if (!isExistUserName(user.User_name) && user.Age > 0 && user.Age <= 120 && Regex.IsMatch(user.Password, @"^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]*$")&& !user.Country.Equals("") && !user.User_name.Equals(""))
                 {
-
+                    user.Age = (int)user.Age;
                     string connectionString = "server=localhost;database=glassBook;uid=root;pwd=Karl5965;";
                     using (MySqlConnection connection = new MySqlConnection(connectionString))
                     {
