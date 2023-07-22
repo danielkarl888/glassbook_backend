@@ -7,3 +7,7 @@ This repository contains the API server side of GlassBook, which is required to 
 
 
 For more information on GlassBookAPI, please refer to the software documentation and user manual included in this repository. These resources will help you understand the project's features, requirements, and how to use it.
+
+**Watch the Introduction video of glassBook on YouTube:**
+
+[![YouTube Video](https://img.youtube.com/vi/VXJhI07RLXc/0.jpg)](https://www.youtube.com/watch?v=VXJhI07RLXc)
