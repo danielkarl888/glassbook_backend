@@ -1,4 +1,4 @@
-# GlassBookAPI
+# GlassBook API
 
 GlassBookAPI is a social network project designed for book lovers. It was created as part of the Workshop in Databases course at Bar Ilan University.
 
