@@ -4,6 +4,8 @@
 
 The **API server** powers the core functionality of the GlassBook platform, handling user data, book recommendations, reviews, and much more. To run the entire GlassBook application, you will need both this backend and the **client-side code**, which can be found in the [GlassBook Web Client Repository](https://github.com/danielkarl888/glassBook).
 
+<img src="https://github.com/user-attachments/assets/35001fda-2770-4f98-9533-e14611cc1d51" width="700"/>
+
 ---
 
 ## 🌟 Overview  
@@ -12,7 +14,10 @@ The GlassBook API provides several essential features, including:
 - 📚 Managing user accounts (registration, login).  
 - 📖 Storing and retrieving book data.  
 - ✍️ Allowing users to leave book reviews and ratings.  
-- 🔍 Retrieving popular books based on different criteria like country, category, and more.  
+- 🔍 Retrieving popular books based on different criteria like country, category, and more.
+
+- <img src="https://github.com/user-attachments/assets/d51edee6-ecc6-4719-b54b-d7f9ae304e0b" width="700"/>
+
 
 ---
 
